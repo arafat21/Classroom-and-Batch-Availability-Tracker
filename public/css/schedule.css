@@ -1,0 +1,168 @@
+/* =================================================================
+   IIT-JU Class Scheduler Page CSS
+   ================================================================= */
+
+/* Filters selection layout */
+.selection-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.selection-control label {
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #4a6fa5;
+}
+
+.selection-control select {
+    padding: 8px 16px;
+    border-radius: 40px;
+    border: 1.5px solid #dce3f3;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: #0d2b6b;
+    background: #f7f9ff;
+    outline: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    min-width: 180px;
+    max-width: 280px;
+}
+
+.selection-control select:focus {
+    border-color: #0d2b6b;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(13,43,107,0.08);
+}
+
+.back-dashboard-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f4ff;
+    color: #0d2b6b;
+    border: 1.5px solid #c0d4f7;
+    padding: 8px 18px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.back-dashboard-btn:hover {
+    background: #dce8ff;
+    border-color: #0d2b6b;
+}
+
+/* Empty grid state placeholder */
+.empty-grid-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 20px;
+    color: #8fa0cc;
+    gap: 15px;
+    height: 100%;
+}
+
+.empty-grid-placeholder svg {
+    margin-bottom: 10px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.empty-grid-placeholder h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0d2b6b;
+}
+
+.empty-grid-placeholder p {
+    font-size: 0.85rem;
+    max-width: 420px;
+    line-height: 1.5;
+    color: #6b84c7;
+}
+
+/* Grid loading spinner view */
+.grid-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px;
+    color: #6b84c7;
+    font-weight: 500;
+    font-size: 0.95rem;
+    gap: 14px;
+}
+
+/* Error message styling */
+.error-msg {
+    text-align: center;
+    padding: 40px;
+    color: #c0392b;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Grid cells style */
+.grid-cell-card {
+    border-radius: 8px;
+    padding: 8px 10px;
+    min-height: 52px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.grid-cell-card.available {
+    background: linear-gradient(145deg, #eafcf1 0%, #daf8e4 100%);
+    border-left: 3px solid #27ae60;
+    cursor: pointer;
+}
+
+.grid-cell-card.available:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.18);
+    background: linear-gradient(145deg, #daf8e4 0%, #c9f5d6 100%);
+}
+
+.grid-cell-card.available .status-title {
+    font-weight: 800;
+    font-size: 0.76rem;
+    color: #1b7a43;
+}
+
+.grid-cell-card.available .status-sub {
+    font-size: 0.65rem;
+    color: #27ae60;
+    margin-top: 2px;
+    font-weight: 600;
+}
+
+.grid-cell-card.conflict {
+    background: #f5f6f9;
+    border-left: 3px solid #b2bec3;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.grid-cell-card.conflict .status-title {
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: #7f8c8d;
+}
