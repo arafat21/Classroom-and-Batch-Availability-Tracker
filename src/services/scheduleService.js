@@ -5,6 +5,7 @@ const Schedule = require('../models/Schedule');
 const Timeslot = require('../models/Timeslot');
 const Classroom = require('../models/Classroom');
 const Batch = require('../models/Batch');
+const emailService = require('./emailService');
 
 
 // Get current date in Bangladesh timezone (UTC+6) as YYYY-MM-DD
@@ -344,6 +345,33 @@ async function validateSchedule(scheduleData, excludeScheduleId = null) {
 async function createSchedule(scheduleData) {
     await validateSchedule(scheduleData);
     const scheduleId = await Schedule.create(scheduleData);
+
+    // Asynchronously send notification
+    (async () => {
+        try {
+            const schedule = await Schedule.findById(scheduleId);
+            if (schedule) {
+                const teacher = await Teacher.findById(schedule.teacher_id);
+                const students = await Student.findEmailsBySemesterId(schedule.semester_id);
+                const studentEmails = students.map(s => s.email).filter(Boolean);
+
+                await emailService.sendScheduleNotification('create', {
+                    courseCode: schedule.course_code,
+                    courseTitle: schedule.course_title,
+                    teacherName: teacher ? teacher.teacher_name : 'Unknown Teacher',
+                    scheduleDate: toDateString(schedule.schedule_date),
+                    slotNo: schedule.slot_no,
+                    startTime: formatTime(schedule.start_time),
+                    endTime: formatTime(schedule.end_time),
+                    roomNumber: schedule.room_number,
+                    scheduleType: schedule.schedule_type || 'class'
+                }, studentEmails);
+            }
+        } catch (err) {
+            console.error('Error sending create schedule email notification:', err);
+        }
+    })();
+
     return scheduleId;
 }
 
@@ -366,7 +394,33 @@ async function cancelSchedule(scheduleId, userId) {
         throw new Error('Cannot cancel past schedules');
     }
 
-    return await Schedule.cancel(scheduleId);
+    const cancelResult = await Schedule.cancel(scheduleId);
+
+    if (cancelResult) {
+        // Asynchronously send notification
+        (async () => {
+            try {
+                const students = await Student.findEmailsBySemesterId(schedule.semester_id);
+                const studentEmails = students.map(s => s.email).filter(Boolean);
+
+                await emailService.sendScheduleNotification('cancel', {
+                    courseCode: schedule.course_code,
+                    courseTitle: schedule.course_title,
+                    teacherName: teacher.teacher_name,
+                    scheduleDate: toDateString(schedule.schedule_date),
+                    slotNo: schedule.slot_no,
+                    startTime: formatTime(schedule.start_time),
+                    endTime: formatTime(schedule.end_time),
+                    roomNumber: schedule.room_number,
+                    scheduleType: schedule.schedule_type || 'class'
+                }, studentEmails);
+            } catch (err) {
+                console.error('Error sending cancel schedule email notification:', err);
+            }
+        })();
+    }
+
+    return cancelResult;
 }
 
 async function rescheduleClass(scheduleId, newScheduleData, userId) {
@@ -405,6 +459,40 @@ async function rescheduleClass(scheduleId, newScheduleData, userId) {
         scheduleDate: newScheduleData.scheduleDate,
         scheduleType: oldSchedule.schedule_type || 'class'
     });
+
+    if (newScheduleId) {
+        // Asynchronously send notification
+        (async () => {
+            try {
+                const newSchedule = await Schedule.findById(newScheduleId);
+                if (newSchedule) {
+                    const students = await Student.findEmailsBySemesterId(oldSchedule.semester_id);
+                    const studentEmails = students.map(s => s.email).filter(Boolean);
+
+                    await emailService.sendScheduleNotification('reschedule', {
+                        courseCode: oldSchedule.course_code,
+                        courseTitle: oldSchedule.course_title,
+                        teacherName: teacher.teacher_name,
+                        scheduleType: oldSchedule.schedule_type || 'class',
+
+                        oldDate: toDateString(oldSchedule.schedule_date),
+                        oldSlotNo: oldSchedule.slot_no,
+                        oldStartTime: formatTime(oldSchedule.start_time),
+                        oldEndTime: formatTime(oldSchedule.end_time),
+                        oldRoomNumber: oldSchedule.room_number,
+
+                        newDate: toDateString(newSchedule.schedule_date),
+                        newSlotNo: newSchedule.slot_no,
+                        newStartTime: formatTime(newSchedule.start_time),
+                        newEndTime: formatTime(newSchedule.end_time),
+                        newRoomNumber: newSchedule.room_number
+                    }, studentEmails);
+                }
+            } catch (err) {
+                console.error('Error sending reschedule email notification:', err);
+            }
+        })();
+    }
 
     return newScheduleId;
 }

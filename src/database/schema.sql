@@ -1,10 +1,15 @@
+-- =========================================================
+-- DATABASE RESET
+-- =========================================================
 
-DROP DATABASE IF EXISTS classroom_tracker;
--- DATABASE CREATION
-CREATE DATABASE IF NOT EXISTS classroom_tracker;
-USE classroom_tracker;
+DROP DATABASE IF EXISTS classroom_tracker_main;
+CREATE DATABASE classroom_tracker_main;
+USE classroom_tracker_main;
 
--- USER TABLE
+-- =========================================================
+-- USERS TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -13,13 +18,19 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- SEMESTER TABLE
+-- =========================================================
+-- SEMESTERS TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS semesters (
     semester_id INT AUTO_INCREMENT PRIMARY KEY,
     semester_no VARCHAR(50) NOT NULL UNIQUE
 );
 
--- BATCH TABLE
+-- =========================================================
+-- BATCHES TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS batches (
     batch_id INT AUTO_INCREMENT PRIMARY KEY,
     batch_name VARCHAR(50) NOT NULL,
@@ -30,7 +41,10 @@ CREATE TABLE IF NOT EXISTS batches (
         ON UPDATE CASCADE
 );
 
--- STUDENT TABLE
+-- =========================================================
+-- STUDENTS TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS students (
     student_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
@@ -45,7 +59,10 @@ CREATE TABLE IF NOT EXISTS students (
         ON DELETE RESTRICT
 );
 
--- TEACHER TABLE
+-- =========================================================
+-- TEACHERS TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS teachers (
     teacher_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
@@ -56,7 +73,10 @@ CREATE TABLE IF NOT EXISTS teachers (
         ON DELETE CASCADE
 );
 
--- COURSE TABLE
+-- =========================================================
+-- COURSES TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS courses (
     course_id INT AUTO_INCREMENT PRIMARY KEY,
     course_code VARCHAR(20) NOT NULL UNIQUE,
@@ -71,13 +91,19 @@ CREATE TABLE IF NOT EXISTS courses (
         ON DELETE RESTRICT
 );
 
--- CLASSROOM TABLE
+-- =========================================================
+-- CLASSROOMS TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS classrooms (
     classroom_id INT AUTO_INCREMENT PRIMARY KEY,
     room_number VARCHAR(20) NOT NULL UNIQUE
 );
 
--- TIMESLOT TABLE
+-- =========================================================
+-- TIMESLOTS TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS timeslots (
     timeslot_id INT AUTO_INCREMENT PRIMARY KEY,
     slot_no INT NOT NULL UNIQUE,
@@ -85,7 +111,10 @@ CREATE TABLE IF NOT EXISTS timeslots (
     end_time TIME NOT NULL
 );
 
--- SCHEDULE TABLE (with status for soft-delete and schedule_type)
+-- =========================================================
+-- SCHEDULES TABLE
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS schedules (
     schedule_id INT AUTO_INCREMENT PRIMARY KEY,
     course_id INT NOT NULL,
@@ -106,20 +135,22 @@ CREATE TABLE IF NOT EXISTS schedules (
         ON DELETE RESTRICT
 );
 
+-- =========================================================
 -- INDEXES
+-- =========================================================
+
 CREATE INDEX idx_schedule_date ON schedules(schedule_date);
 CREATE INDEX idx_schedule_course ON schedules(course_id);
 CREATE INDEX idx_schedule_timeslot ON schedules(timeslot_id);
 CREATE INDEX idx_schedule_room ON schedules(classroom_id);
 CREATE INDEX idx_schedule_status ON schedules(status);
 
--- NOTE: No DB-level unique constraint on room/date/slot because soft-delete
--- (status='cancelled') would conflict on reschedule. Conflict prevention is
--- handled in application code (scheduleService.validateSchedule) filtering by
--- status='scheduled'.
+-- =========================================================
+-- TIMESLOTS SEED
+-- =========================================================
 
--- DEFAULT TIMESLOTS
-INSERT INTO timeslots (slot_no, start_time, end_time) VALUES
+INSERT INTO timeslots (slot_no, start_time, end_time)
+VALUES
 (1, '08:30:00', '10:00:00'),
 (2, '10:00:00', '11:30:00'),
 (3, '11:30:00', '13:00:00'),

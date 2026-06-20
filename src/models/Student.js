@@ -37,6 +37,17 @@ class Student {
         `, [studentId]);
         return rows[0];
     }
+
+    static async findEmailsBySemesterId(semesterId) {
+        const [rows] = await pool.execute(`
+            SELECT s.student_name, u.email
+            FROM students s
+            JOIN users u ON s.user_id = u.user_id
+            JOIN batches b ON s.batch_id = b.batch_id
+            WHERE b.semester_id = ?
+        `, [semesterId]);
+        return rows;
+    }
 }
 
 module.exports = Student;

@@ -77,13 +77,7 @@
                     </button>
                 </form>
 
-                <div class="demo-info">
-                    <p class="demo-title">🔑 Demo Accounts <span class="demo-pw">(password: password123)</span></p>
-                    <div class="demo-accounts">
-                        <button type="button" class="demo-btn" onclick="fillDemo('patwary@juniv.edu')">👨‍🏫 Teacher</button>
-                        <button type="button" class="demo-btn" onclick="fillDemo('50_001@juniv.edu')">🧑‍🎓 Student</button>
-                    </div>
-                </div>
+                <!-- Demo accounts removed: users must remember their credentials -->
             </div>
         </div>
     </div>
@@ -93,10 +87,6 @@
         function togglePassword() {
             const pw = document.getElementById('password');
             pw.type = pw.type === 'password' ? 'text' : 'password';
-        }
-        function fillDemo(email) {
-            document.getElementById('email').value = email;
-            document.getElementById('password').value = 'password123';
         }
     </script>
 </body>

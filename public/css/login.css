@@ -302,49 +302,7 @@ body {
     to   { transform: rotate(360deg); }
 }
 
-/* ---- DEMO INFO ---- */
-.demo-info {
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 1px solid #eef0f7;
-    text-align: center;
-}
-
-.demo-title {
-    font-size: 0.8rem;
-    color: #8fa0cc;
-    margin-bottom: 12px;
-    font-weight: 500;
-}
-
-.demo-pw {
-    font-weight: 600;
-    color: #6b84c7;
-}
-
-.demo-accounts {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.demo-btn {
-    background: #f0f4ff;
-    border: 1.5px solid #dce3f3;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: 0.82rem;
-    font-family: inherit;
-    font-weight: 600;
-    color: #1a3a8f;
-    cursor: pointer;
-    transition: all 0.15s;
-}
-
-.demo-btn:hover {
-    background: #e0e8ff;
-    border-color: #1a3a8f;
-}
+/* Demo accounts UI intentionally removed */
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 900px) {
